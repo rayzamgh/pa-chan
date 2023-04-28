@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { firebase } from './firebase';
 import * as PIXI from 'pixi.js';
-import { Live2DModel, SoundManager, config } from 'pixi-live2d-display/cubism4';
+import { Live2DModel, SoundManager } from 'pixi-live2d-display/cubism4';
 import axios from 'axios';
+import { useVolume } from './VolumeContext';
 
 const Live2DModelComponent = ({ modelPath, canvasId, receivedMessage }) => {
   const canvasRef = useRef();
@@ -11,9 +12,13 @@ const Live2DModelComponent = ({ modelPath, canvasId, receivedMessage }) => {
   const [app, setApp] = useState(null);
   const [idToken, setIdToken] = useState(null);
 
+  const volume = useVolume();
+  SoundManager.volume = volume["volume"];
+
   useEffect(() => {
 
     if (model) return
+
 
     async function getIdToken() {
       const currentUser = firebase.auth().currentUser;
@@ -93,9 +98,8 @@ const Live2DModelComponent = ({ modelPath, canvasId, receivedMessage }) => {
       .then(response => {
 
         // TODO SENTIMENT ANALYSIS ON EXPRESSION AND MOTION
-
         const gcsUrl = response.data.gcs_url;
-        const motion1 = model.motion('TapBody', 1, 2, gcsUrl);
+        const motion1 = model.motion('TapBody', 1, 3, gcsUrl);
         // model.expression('F04');
 
       })

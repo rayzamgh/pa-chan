@@ -6,6 +6,7 @@ import Live2DComponent from './Live2DComponent';
 import './ChatbotPage.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
+import VolumeSlider from './VolumeSlider';
 
 
 function ChatBotPage() {
@@ -25,12 +26,31 @@ function ChatBotPage() {
 
     setSocket(s);
 
+    const addBotMessageWithTypingEffect = (msg) => {
+      let typedMessage = '';
+      let index = 0;
+    
+      const typingInterval = setInterval(() => {
+        if (index < msg.length) {
+          typedMessage += msg[index];
+          setMessages((messages) => [
+            ...messages.slice(0, -1),
+            { text: typedMessage, sender: 'bot' },
+          ]);
+          index++;
+        } else {
+          clearInterval(typingInterval);
+          setReceivedMessage(msg);
+        }
+      }, 50); // You can adjust the typing speed by changing this value (in milliseconds)
+    };
+
     s.on('message', (msg) => {
       setMessages((messages) => [
         ...messages,
-        { text: msg, sender: 'bot' }, // Add sender property to message object
+        { text: '', sender: 'bot' },
       ]);
-      setReceivedMessage(msg);
+      addBotMessageWithTypingEffect(msg);
     });
 
     return () => {
@@ -90,8 +110,21 @@ function ChatBotPage() {
       </div>
       {showMenu && (
         <div className="floating-menu">
+          AI Setting
+          <br />
+          <br />
+          AI Volume:
+          <VolumeSlider />
+          <br />
+          Hide or Show AI:
           <div className="toggle-item" onClick={toggleLive2D}>
-            {showLive2D ? 'Hide Live2D' : 'Show Live2D'}
+            {showLive2D ? 
+            <div>
+              <p style={{"textAlign": "center", "color": "red"}}>Hide</p>
+            </div> : 
+            <div>
+              <p style={{"textAlign": "center", "color": "green"}}>Show</p>
+            </div>}
           </div>
         </div>
       )}
