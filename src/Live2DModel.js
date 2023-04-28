@@ -92,6 +92,8 @@ const Live2DModelComponent = ({ modelPath, canvasId, receivedMessage }) => {
       })
       .then(response => {
 
+        // TODO SENTIMENT ANALYSIS ON EXPRESSION AND MOTION
+
         const gcsUrl = response.data.gcs_url;
         const motion1 = model.motion('TapBody', 1, 2, gcsUrl);
         // model.expression('F04');
