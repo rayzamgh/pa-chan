@@ -1,0 +1,21 @@
+  .live2d-container {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+  }
+
+  .live2d-box {
+    background-color: white;
+    position: relative;
+    overflow:hidden;
+    background-color: #f5f5f5; 
+    border-radius: 50%;
+    box-shadow: 0 0px 10px rgba(25, 27, 184, 0.3); 
+    font-family: Arial, sans-serif; 
+  }
+
+  canvas {
+    display: block;
+  }
