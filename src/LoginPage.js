@@ -1,7 +1,7 @@
 // src/LoginPage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { firebase, analytics} from './firebase';
+import { firebase} from './firebase';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -13,20 +13,10 @@ function LoginPage() {
 
   console.log(user)
 
-  // useEffect(() => {
-  //   firebase.auth().onAuthStateChanged((user) => {
-  //     if (user) {
-  //       navigate('/chatbot');
-  //     }else{
-  //       console.log("Not Logged in")
-  //     }
-  //   });
-  // }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { user } = await firebase.auth().signInWithEmailAndPassword(email, password);
+      await firebase.auth().signInWithEmailAndPassword(email, password);
 
       // Redirect to chatbot page
       navigate('/chatbot');

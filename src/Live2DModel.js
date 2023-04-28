@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { firebase, analytics } from './firebase';
+import { firebase } from './firebase';
 import * as PIXI from 'pixi.js';
 import { Live2DModel, SoundManager, config } from 'pixi-live2d-display/cubism4';
 import axios from 'axios';

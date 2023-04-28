@@ -1,7 +1,7 @@
 // src/ChatBotPage.js
 import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import { firebase, analytics } from './firebase';
+import { firebase } from './firebase';
 import Live2DComponent from './Live2DComponent';
 import './ChatbotPage.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
