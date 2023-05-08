@@ -3,11 +3,47 @@ import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { firebase } from './firebase';
 import Live2DComponent from './Live2DComponent';
+import {
+  useGoogleLogin,
+} from '@react-oauth/google';
 import './ChatbotPage.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import VolumeSlider from './VolumeSlider';
+import axios from 'axios';
+import './MyCustomButton.css';
 
+function MyCustomButton({ onClick, children }) {
+  return (
+    <button className="my-custom-button" onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+function setWithExpiry(key, value, ttl) {
+  const now = new Date();
+
+  const item = {
+    value: value,
+    expiry: now.getTime() + ttl,
+  };
+  localStorage.setItem(key, JSON.stringify(item));
+}
+
+function getWithExpiry(key) {
+  const itemStr = localStorage.getItem(key);
+  if (!itemStr) {
+    return null;
+  }
+  const item = JSON.parse(itemStr);
+  const now = new Date();
+  if (now.getTime() > item.expiry) {
+    localStorage.removeItem(key);
+    return null;
+  }
+  return item.value;
+}
 
 function ChatBotPage() {
   const [socket, setSocket] = useState(null);
@@ -16,6 +52,24 @@ function ChatBotPage() {
   const [showMenu, setShowMenu] = useState(false);
   const [showLive2D, setShowLive2D] = useState(true);
   const [receivedMessage, setReceivedMessage] = useState(null);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  
+  const login = useGoogleLogin({
+    onSuccess: async ({ code }) => {
+      const tokens = await axios.post(`${process.env.REACT_APP_BACKEND}/auth/google`, { 
+        code,
+      });
+
+      const ttl = 3600 * 1000; 
+      setWithExpiry("refresh_token", tokens.data.refresh_token, ttl);
+      
+      // Refresh the page
+      window.location.reload();
+    },
+    onError: () => console.log("Error on GAPI authorize"),
+    flow: 'auth-code',
+    scope: 'profile email https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar openid'
+  });
 
   useEffect(() => {
     
@@ -40,9 +94,8 @@ function ChatBotPage() {
           index++;
         } else {
           clearInterval(typingInterval);
-          setReceivedMessage(msg);
         }
-      }, 50); // You can adjust the typing speed by changing this value (in milliseconds)
+      }, 50);
     };
 
     s.on('message', (msg) => {
@@ -50,6 +103,7 @@ function ChatBotPage() {
         ...messages,
         { text: '', sender: 'bot' },
       ]);
+      setReceivedMessage(msg);
       addBotMessageWithTypingEffect(msg);
     });
 
@@ -58,12 +112,34 @@ function ChatBotPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const token = getWithExpiry('refresh_token');
+    if (!token) {
+      setShowLoginPopup(true);
+    } else {
+      setShowLoginPopup(false);
+    }
+  }, []);
+
   const sendMessage = async (e) => {
     e.preventDefault();
     if (message.trim() === '') return;
 
-    const token = await firebase.auth().currentUser.getIdToken();
-    socket.emit('message', { token, text: message });
+    const idToken = await firebase.auth().currentUser.getIdToken();
+    const refreshToken = getWithExpiry("refresh_token");
+    const tokens = await axios.post(`${process.env.REACT_APP_BACKEND}/auth/google/refresh-token`, { 
+      refreshToken,
+    });
+
+    console.log(
+      "PAYLOAD RECEIVED"
+    )
+
+    console.log(
+      tokens.data
+    )
+
+    socket.emit('message', { token: idToken, oauth_tokens: tokens.data, text: message });
     setMessages((messages) => [
       ...messages,
       { text: message, sender: 'user' }, // Add sender property to message object
@@ -127,6 +203,17 @@ function ChatBotPage() {
             </div>}
           </div>
         </div>
+      )}
+      {showLoginPopup && (
+        <>
+          <div className="backdrop"></div>
+          <div className="login-popup">
+            <h2>Please log in</h2>
+            <MyCustomButton onClick={() => login()}>
+              Sign in with Google 🚀{' '}
+            </MyCustomButton>
+          </div>
+        </>
       )}
     </div>
   );

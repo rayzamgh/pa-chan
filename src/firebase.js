@@ -10,7 +10,8 @@ const firebaseConfig = {
     storageBucket: "portfolio-web-249407.appspot.com",
     messagingSenderId: "490760545858",
     appId: "1:490760545858:web:79eab2489cf56618baefdb",
-    measurementId: "G-8EQ4HDP85V"
+    measurementId: "G-8EQ4HDP85V",
+    clientId : "490760545858-1e5au2i6mt18e5o5j75gudceo02sf83a.apps.googleusercontent.com",
   };
 
 firebase.initializeApp(firebaseConfig);

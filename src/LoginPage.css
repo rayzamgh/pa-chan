@@ -63,3 +63,15 @@
     background-color: #5ca7e6;
   }
   
+  .google-signin-button {
+    background-color: #4285f4;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-top: 10px;
+    cursor: pointer;
+    text-align: center;
+  }
+  

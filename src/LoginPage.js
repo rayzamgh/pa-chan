@@ -1,56 +1,52 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  GoogleOAuthProvider,
+  useGoogleLogin,
+  GoogleLogin,
+} from '@react-oauth/google';
 import { firebase } from './firebase';
 import './LoginPage.css';
 
-function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
+function LoginPage() {
   const navigate = useNavigate();
 
-  const user = firebase.auth().currentUser;
-
-  console.log(user);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleGoogleSignIn = async (credentialResponse) => {
     try {
-      await firebase.auth().signInWithEmailAndPassword(email, password);
+      console.log("credentialResponse")
+      console.log(credentialResponse)
+      const credential = firebase.auth.GoogleAuthProvider.credential(
+        credentialResponse["credential"]
+      );
 
-      // Redirect to chatbot page
+      await firebase.auth().signInWithCredential(credential);
       navigate('/chatbot');
     } catch (error) {
-      alert(error.message);
+      alert(`Sign in error: ${error}`);
     }
   };
 
-  const logo_url = `${process.env.PUBLIC_URL}/static/RM_LOGO-DEFINITIVE.jpeg`
+  const handleLoginError = () => {
+    console.log('Login Failed');
+  };
+
+  const logo_url = `${process.env.PUBLIC_URL}/static/RM_LOGO-DEFINITIVE.jpeg`;
 
   return (
     <div className="login-container">
-      <div className="login-box">
-        <div className="logo-container">
-          <img src={logo_url} alt="Logo" className="logo" />
+      <GoogleOAuthProvider clientId={clientId}>
+        <div className="login-box">
+          <div className="logo-container">
+            <img src={logo_url} alt="Logo" className="logo" />
+          </div>
+          <GoogleLogin
+            onSuccess={handleGoogleSignIn}
+            onError={handleLoginError}
+          />
         </div>
-        <form onSubmit={handleSubmit} className="login-form">
-          <input
-            type="email"
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-            className="login-input"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            className="login-input"
-          />
-          <button type="submit" className="login-button">
-            Sign In
-          </button>
-        </form>
-      </div>
+      </GoogleOAuthProvider>
     </div>
   );
 }

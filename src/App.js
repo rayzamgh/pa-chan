@@ -1,5 +1,6 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { firebase } from './firebase';
 import LoginPage from './LoginPage';
@@ -25,28 +26,32 @@ function App() {
   if (initializing) return null;
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/chatbot"
-          element={
-            user ? (
-              <ChatBotPage />
-            ) : (
-              <Navigate
-                to={{
-                  pathname: '/login',
-                  state: { from: '/chatbot' },
-                }}
-              />
-            )
-          }
-        />
-        <Route path="/live2d" element={<Live2DComponent />} /> 
-        <Route path="/" element={<Navigate to="/login" />} />
-      </Routes>
-    </Router>
+    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+      <Router>
+        <Routes>
+          <Route path="/login" element={
+              <LoginPage />
+          }/>
+          <Route
+            path="/chatbot"
+            element={
+              user ? (
+                <ChatBotPage />
+              ) : (
+                <Navigate
+                  to={{
+                    pathname: '/login',
+                    state: { from: '/chatbot' },
+                  }}
+                />
+              )
+            }
+          />
+          <Route path="/live2d" element={<Live2DComponent />} /> 
+          <Route path="/" element={<Navigate to="/login" />} />
+        </Routes>
+      </Router>
+    </GoogleOAuthProvider>
   );
 }
 
