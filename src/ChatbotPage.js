@@ -60,7 +60,7 @@ function ChatBotPage() {
         code,
       });
 
-      const ttl = 3600 * 1000; 
+      const ttl = 7 * 24 * 3600 * 1000; 
       setWithExpiry("refresh_token", tokens.data.refresh_token, ttl);
       
       // Refresh the page
@@ -68,7 +68,7 @@ function ChatBotPage() {
     },
     onError: () => console.log("Error on GAPI authorize"),
     flow: 'auth-code',
-    scope: 'profile email https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/calendar openid'
+    scope: 'https://mail.google.com/ https://www.googleapis.com/auth/userinfo.profile openid'
   });
 
   useEffect(() => {
