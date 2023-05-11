@@ -1,214 +1,217 @@
-/* src/ChatBotPage.css */
-  .chatbot-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 100vh;
-    background-color: #f5f5f5;
-    padding: 16px;
-  }
-  
-  .chat-messages {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 8px 0;
-    margin-bottom: 32px; /* Add margin to create space between messages and input */
-  }
+.floating-menu,.toggle-item{
+  box-shadow:0 2px 5px rgba(0,0,0,.3)
+}
+.chatbot-container{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:100vh;
+  background-color:#f5f5f5;
+  padding:16px
+}
+.chat-messages{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  padding:8px 0;
+  margin-bottom:32px
+}
+.chat-message{
+  max-width:60%;
+  padding:8px 12px;
+  border-radius:12px;
+  margin-bottom:8px
+}
+.user-message{
+  align-self:flex-end;
+  background-color:#007bff;
+  color:#fff
+}
+.bot-message{
+  align-self:flex-start;
+  background-color:#e8e8e8;
+  color:#333
+}
+.message-text{
+  margin:0
+}
+.message-form{
+  display:flex;
+  gap:8px;
+  position:fixed;
+  bottom:16px;
+  left:16px;
+  right:16px;
+  background-color:#f5f5f5;
+  padding:8px;
+  border-radius:12px
+}
+.message-input{
+  flex:1;
+  border-radius:20px;
+  border:none;
+  padding:8px 12px;
+  outline:0
+}
+.send-button{
+  border-radius:20px;
+  border:none;
+  background-color:#007bff;
+  color:#fff;
+  font-weight:700;
+  padding:8px 12px;
+  cursor:pointer;
+  outline:0;
+  transition:background-color .2s
+}
+.send-button:hover{
+  background-color:#0056b3
+}
+.send-button:active{
+  background-color:#004085
+}
+.send-button:disabled{
+  background-color:#6c757d;
+  cursor:not-allowed
+}
+.menu-button-wrapper:active .menu-button,.menu-button-wrapper:hover .menu-button,.menu-toggle:focus~.menu-button{
+  opacity:1
+}
+.toggle-item{
+  padding:1px 10px;
+  cursor:pointer
+}
+.toggle-item:hover{
+  background-color:#f1f1f1
+}
+.menu-button-wrapper{
+  position:fixed;
+  top:15px;
+  right:15px;
+  width:40px;
+  height:40px
+}
+.menu-button,.menu-toggle{
+  position:absolute;
+  opacity:0;
+  cursor:pointer
+}
+.backdrop,.menu-button,.menu-toggle{
+  width:100%;
+  height:100%
+}
+.menu-toggle{
+  z-index:101
+}
+.menu-button{
+  padding:10px;
+  background-color:#2c3e50;
+  color:#fff;
+  border-radius:5px;
+  z-index:100;
+  transition:opacity .3s
+}
+.close-popup-button{
+  background-color:#f44336;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  border-radius:5px;
+  padding:5px 10px;
+  margin-top:10px;
+  display:inline-block
+}
+.backdrop{
+  position:fixed;
+  top:0;
+  left:0;
+  background-color:rgba(0,0,0,.5);
+  z-index:999
+}
+.login-popup{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background-color:#fff;
+  padding:20px;
+  border-radius:5px;
+  box-shadow:0 0 10px rgba(0,0,0,.1);
+  z-index:1000
+}
+.toggle-item{
+  position:relative;
+  display:inline-block;
+  width:60px;
+  height:34px;
+  box-shadow: none;
+}
+.slider,.slider:before{
+  position:absolute;
+  transition:.4s
+}
+.toggle-item input{
+  opacity:0;
+  width:0;
+  height:0
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+.slider:before{
+  content:"";
+  height:26px;
+  width:26px;
+  left:4px;
+  bottom:4px;
+  background-color:#fff;
+  border-radius:50%
+}
+input:checked+.slider{
+  background-color:#2196f3
+}
+input:focus+.slider{
+  box-shadow:0 0 1px #2196f3
+}
+input:checked+.slider:before{
+  transform:translateX(180%)
+}
+.floating-menu{
+  position:fixed;
+  top:60px;
+  right:15px;
+  background-color:#fff;
+  padding:15px;
+  border-radius:5px;
+  z-index:99;
+}
 
-  .chat-message {
-    max-width: 60%;
-    padding: 8px 12px;
-    border-radius: 12px;
-    margin-bottom: 8px;
+@media screen and (max-width:600px){
+  .floating-menu{
+      padding:10px;
+      top:50px;
+      right:10px
   }
-  
-  .user-message {
-    align-self: flex-end;
-    background-color: #007bff;
-    color: #ffffff;
+  .toggle-item{
+      width:40px;
+      height:22px
   }
-  
-  .bot-message {
-    align-self: flex-start;
-    background-color: #e8e8e8;
-    color: #333333;
+  .slider{
+      border-radius:22px
   }
-  
-  .message-text {
-    margin: 0;
+  .slider:before{
+      height:18px;
+      width:18px
   }
-  
-  .message-form {
-    display: flex;
-    gap: 8px;
-    position: fixed; /* Add position fixed */
-    bottom: 16px; /* Add bottom position */
-    left: 16px; /* Add left position */
-    right: 16px; /* Add right position */
-    background-color: #f5f5f5; /* Add background color */
-    padding: 8px; /* Add padding */
-    border-radius: 12px; /* Add border-radius */
+  input:checked+.slider:before{
+      transform:translateX(180%)
   }
-  
-  .message-input {
-    flex: 1;
-    border-radius: 20px;
-    border: none;
-    padding: 8px 12px;
-    outline: none;
-  }
-  
-  .send-button {
-    border-radius: 20px;
-    border: none;
-    background-color: #007bff;
-    color: #ffffff;
-    font-weight: bold;
-    padding: 8px 12px;
-    cursor: pointer;
-    outline: none;
-    transition: background-color 0.2s;
-    }
-    
-    .send-button:hover {
-    background-color: #0056b3;
-    }
-    
-    .send-button:active {
-    background-color: #004085;
-    }
-    
-    .send-button:disabled {
-    background-color: #6c757d;
-    cursor: not-allowed;
-    }
-    .menu-button-wrapper {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      width: 40px;
-      height: 40px;
-    }
-    
-    .menu-button {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      padding: 10px;
-      background-color: #2c3e50;
-      color: #fff;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 100;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    
-    .menu-button-wrapper:hover .menu-button,
-    .menu-button-wrapper:active .menu-button {
-      opacity: 1;
-    }
-    
-    
-    .floating-menu {
-      position: fixed;
-      top: 60px;
-      right: 15px;
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-      z-index: 99;
-    }
-    
-    .toggle-item {
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-    
-    .toggle-item:hover {
-      background-color: #f1f1f1;
-    }
-    
-    .menu-button-wrapper {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      width: 40px;
-      height: 40px;
-    }
-    
-    .menu-toggle {
-      position: absolute;
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-      z-index: 101;
-    }
-    
-    .menu-button {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      padding: 10px;
-      background-color: #2c3e50;
-      color: #fff;
-      border-radius: 5px;
-      z-index: 100;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    
-    .menu-button-wrapper:hover .menu-button,
-    .menu-toggle:focus ~ .menu-button {
-      opacity: 1;
-    }
-    
-    .login-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    
-    .close-popup-button {
-      background-color: #f44336;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      padding: 5px 10px;
-      margin-top: 10px;
-      display: inline-block;
-    }
-    .backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-    }
-    
-    .login-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-    
-    
+}

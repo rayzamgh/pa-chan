@@ -51,6 +51,7 @@ function ChatBotPage() {
   const [messages, setMessages] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   const [showLive2D, setShowLive2D] = useState(true);
+  const [assistantMode, setShowAssistantMode] = useState(true);
   const [receivedMessage, setReceivedMessage] = useState(null);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   
@@ -130,16 +131,14 @@ function ChatBotPage() {
     const tokens = await axios.post(`${process.env.REACT_APP_BACKEND}/auth/google/refresh-token`, { 
       refreshToken,
     });
+    
+    socket.emit('message', { 
+      token: idToken, 
+      oauth_tokens: tokens.data, 
+      text: message, 
+      mode: assistantMode ? 'assistant' : 'chat' 
+    });
 
-    console.log(
-      "PAYLOAD RECEIVED"
-    )
-
-    console.log(
-      tokens.data
-    )
-
-    socket.emit('message', { token: idToken, oauth_tokens: tokens.data, text: message });
     setMessages((messages) => [
       ...messages,
       { text: message, sender: 'user' }, // Add sender property to message object
@@ -149,6 +148,7 @@ function ChatBotPage() {
 
   const toggleMenu = () => setShowMenu((prevState) => !prevState);
   const toggleLive2D = () => setShowLive2D((prevState) => !prevState);
+  const toggleAssistantMode = () => setShowAssistantMode((prevState) => !prevState);
 
   return (
     <div className="chatbot-container">
@@ -186,22 +186,21 @@ function ChatBotPage() {
       </div>
       {showMenu && (
         <div className="floating-menu">
-          AI Setting
-          <br />
-          <br />
           AI Volume:
           <VolumeSlider />
+          Show Portrait:
           <br />
-          Hide or Show AI:
-          <div className="toggle-item" onClick={toggleLive2D}>
-            {showLive2D ? 
-            <div>
-              <p style={{"textAlign": "center", "color": "red"}}>Hide</p>
-            </div> : 
-            <div>
-              <p style={{"textAlign": "center", "color": "green"}}>Show</p>
-            </div>}
-          </div>
+          <label className="toggle-item">
+            <input type="checkbox" checked={showLive2D} onChange={toggleLive2D} />
+            <span className="slider"></span>
+          </label>
+          <br />
+          Assistant Mode:
+          <br />
+          <label className="toggle-item">
+            <input type="checkbox" checked={assistantMode} onChange={toggleAssistantMode} />
+            <span className="slider"></span>
+          </label>
         </div>
       )}
       {showLoginPopup && (
