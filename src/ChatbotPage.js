@@ -1,5 +1,5 @@
 // src/ChatBotPage.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { firebase } from './firebase';
 import Live2DComponent from './Live2DComponent';
@@ -54,6 +54,22 @@ function ChatBotPage() {
   const [assistantMode, setShowAssistantMode] = useState(true);
   const [receivedMessage, setReceivedMessage] = useState(null);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [botIsTyping, setBotIsTyping] = useState(false);
+  const [inputHeight, setInputHeight] = useState("auto");
+  const [scrollHeight, setScrollHeight] = useState("auto");
+
+  const textAreaRef = useRef(null);
+
+  useEffect(() => {
+    setScrollHeight(`${textAreaRef.current.scrollHeight}px`);
+  }, [message]);  // re-run effect when 'message' changes
+
+  const onChangeHandler = (event) => {
+    setMessage(event.target.value);
+    setInputHeight("auto");
+    setScrollHeight(`${textAreaRef.current.scrollHeight}px`);
+  }
+
   
   const login = useGoogleLogin({
     onSuccess: async ({ code }) => {
@@ -84,6 +100,7 @@ function ChatBotPage() {
     const addBotMessageWithTypingEffect = (msg) => {
       let typedMessage = '';
       let index = 0;
+      setBotIsTyping(true);    
     
       const typingInterval = setInterval(() => {
         if (index < msg.length) {
@@ -95,6 +112,7 @@ function ChatBotPage() {
           index++;
         } else {
           clearInterval(typingInterval);
+          setBotIsTyping(false); // bot has finished typing
         }
       }, 50);
     };
@@ -168,14 +186,19 @@ function ChatBotPage() {
         ))}
       </div>
       <form className="message-form" onSubmit={sendMessage}>
-        <input
-          className="message-input"
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message..."
-        />
-        <button className="send-button" type="submit">
+          <textarea
+            className="message-input"
+            ref={textAreaRef}
+            style={{
+              height: inputHeight,
+              overflow: 'hidden',
+            }}
+            value={message}
+            onChange={onChangeHandler}
+            onReset={() => setInputHeight("auto")}
+            placeholder="Type your message..."
+          />
+        <button className="send-button" type="submit" disabled={botIsTyping}>
           Send
         </button>
       </form>
