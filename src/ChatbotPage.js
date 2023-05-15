@@ -51,7 +51,7 @@ function ChatBotPage() {
   const [messages, setMessages] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
   const [showLive2D, setShowLive2D] = useState(true);
-  const [assistantMode, setShowAssistantMode] = useState(true);
+  const [assistantMode, setShowAssistantMode] = useState(false);
   const [receivedMessage, setReceivedMessage] = useState(null);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [botIsTyping, setBotIsTyping] = useState(false);
